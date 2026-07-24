@@ -1,0 +1,6 @@
+{
+  "name": "Swift Courier",
+  "description": "Production-style React Native delivery MVP with Expo, live courier tracking simulation, and gesture-driven checkout.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
