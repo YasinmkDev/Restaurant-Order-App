@@ -69,15 +69,21 @@ interface CravingsRailProps {
 
 export function CravingsRail({ onSelectCraving }: CravingsRailProps) {
   const { colors, isDark } = useTheme();
-  const [activeCravingId, setActiveCravingId] = useState<string>('biryani');
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={[styles.sectionTitle, { color: isDark ? colors.textPrimary : '#1E293B' }]}>
-          Explore by craving
-        </Text>
-        <Text style={styles.sectionSubtitle}>Tap for quick cravings</Text>
+        <View style={styles.headerRow}>
+          <Text style={[styles.sectionTitle, { color: isDark ? colors.textPrimary : '#1E293B' }]}>
+            Explore by craving
+          </Text>
+          <View style={[styles.exploreCountBadge, { backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : '#F1F5F9' }]}>
+            <Text style={[styles.exploreCountText, { color: colors.accent }]}>
+              {CRAVING_ITEMS.length} Categories
+            </Text>
+          </View>
+        </View>
+        <Text style={styles.sectionSubtitle}>Tap to browse dishes, search & filter</Text>
       </View>
 
       <ScrollView
@@ -89,12 +95,10 @@ export function CravingsRail({ onSelectCraving }: CravingsRailProps) {
           <CravingCircle
             key={item.id}
             item={item}
-            isActive={activeCravingId === item.id}
             accentColor={colors.accent}
             isDark={isDark}
             onPress={() => {
-              Haptics.selectionAsync().catch(() => {});
-              setActiveCravingId(item.id);
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
               onSelectCraving(item);
             }}
           />
@@ -106,13 +110,11 @@ export function CravingsRail({ onSelectCraving }: CravingsRailProps) {
 
 function CravingCircle({
   item,
-  isActive,
   accentColor,
   isDark,
   onPress,
 }: {
   item: CravingItem;
-  isActive: boolean;
   accentColor: string;
   isDark: boolean;
   onPress: () => void;
@@ -147,7 +149,7 @@ function CravingCircle({
           style={[
             styles.imageRing,
             {
-              borderColor: isActive ? accentColor : 'transparent',
+              borderColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)',
               backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
             },
           ]}
@@ -166,12 +168,8 @@ function CravingCircle({
           style={[
             styles.nameLabel,
             {
-              color: isActive
-                ? accentColor
-                : isDark
-                ? '#E2E8F0'
-                : '#475569',
-              fontWeight: isActive ? '700' : '600',
+              color: isDark ? '#E2E8F0' : '#334155',
+              fontWeight: '600',
             },
           ]}
         >
@@ -190,16 +188,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     marginBottom: 12,
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '800',
     letterSpacing: -0.2,
   },
+  exploreCountBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 12,
+  },
+  exploreCountText: {
+    fontSize: 10.5,
+    fontWeight: '700',
+  },
   sectionSubtitle: {
     fontSize: 11.5,
     color: '#94A3B8',
     fontWeight: '500',
-    marginTop: 1,
+    marginTop: 2,
   },
   scrollList: {
     paddingHorizontal: Spacing.md,
@@ -216,7 +228,7 @@ const styles = StyleSheet.create({
     width: 62,
     height: 62,
     borderRadius: 31,
-    borderWidth: 2,
+    borderWidth: 1.5,
     padding: 2,
     alignItems: 'center',
     justifyContent: 'center',

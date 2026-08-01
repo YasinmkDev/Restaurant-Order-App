@@ -23,5 +23,10 @@ export type Product = {
   rating: number;
   preparationTime: string;
   category: 'food' | 'grocery' | 'package';
+  subCategory?: string;
+  tags?: string[];
+  isVegetarian?: boolean;
+  isSpicy?: boolean;
+  isPopular?: boolean;
   customizationGroups?: CustomizationGroup[];
 };
