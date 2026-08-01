@@ -45,6 +45,30 @@ export default function RootLayout() {
               title: 'Live Tracking',
             }}
           />
+          <Stack.Screen
+            name="favorites"
+            options={{
+              title: 'Saved Favorites',
+            }}
+          />
+          <Stack.Screen
+            name="support"
+            options={{
+              title: 'Help Desk',
+            }}
+          />
+          <Stack.Screen
+            name="addresses"
+            options={{
+              title: 'Saved Addresses',
+            }}
+          />
+          <Stack.Screen
+            name="dietary"
+            options={{
+              title: 'Dietary Preferences',
+            }}
+          />
         </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>

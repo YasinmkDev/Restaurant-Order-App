@@ -10,13 +10,12 @@ import { useSafeRouter } from '../../hooks/useSafeRouter';
 import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '../../components/ui/Screen';
 import { AppText } from '../../components/ui/AppText';
-import { ThemeToggle } from '../../components/ui/ThemeToggle';
 import { IconButton } from '../../components/ui/IconButton';
 import { SectionHeader } from '../../components/ui/SectionHeader';
 import { PrimaryButton } from '../../components/ui/PrimaryButton';
-import { HonestNoticeModal } from '../../components/ui/HonestNoticeModal';
 import { CategoryKey } from '../../components/explore/CategoryTabs';
 import { ExploreSkeleton } from '../../components/explore/ExploreSkeleton';
+import { HomeTopHeader } from '../../components/explore/HomeTopHeader';
 import { StoreCard } from '../../components/explore/StoreCard';
 import { ProductCard } from '../../components/explore/ProductCard';
 import { HeroFeaturedCarousel } from '../../components/explore/HeroFeaturedCarousel';
@@ -41,7 +40,6 @@ export default function ExploreScreen() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>('all');
-  const [locationNoticeVisible, setLocationNoticeVisible] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -123,36 +121,6 @@ export default function ExploreScreen() {
     <Screen safeBottom>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
 
-      {/* Top Bar: Compact Delivery Location & Actions */}
-      <View style={[styles.topBar, { borderBottomColor: colors.borderSubtle }]}>
-        <Pressable
-          onPress={() => setLocationNoticeVisible(true)}
-          style={styles.locationAffordance}
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel={`Delivering to ${selectedAddress.title}, ${selectedAddress.fullAddress}. Tap for details.`}
-        >
-          <Ionicons name="location-outline" size={16} color={colors.accent} />
-          <AppText variant="caption" color="secondary" style={styles.locationPrefix}>
-            Delivering to ·
-          </AppText>
-          <AppText variant="label" numberOfLines={1} style={styles.locationText}>
-            {selectedAddress.title}
-          </AppText>
-          <Ionicons name="chevron-down" size={12} color={colors.textTertiary} />
-        </Pressable>
-
-        <View style={styles.topActions}>
-          <IconButton
-            icon={<Ionicons name="bicycle-outline" size={18} color={colors.textPrimary} />}
-            onPress={() => router.navigate('/tracking/order-sw-9842' as any)}
-            accessibilityLabel="Track active delivery"
-            size={40}
-          />
-          <ThemeToggle />
-        </View>
-      </View>
-
       {/* Content */}
       {isLoading ? (
         <ExploreSkeleton />
@@ -189,15 +157,12 @@ export default function ExploreScreen() {
             }
             ListHeaderComponent={
               <View>
-                {/* Greeting & Headline */}
-                <View style={styles.greetingSection}>
-                  <AppText variant="caption" color="secondary">
-                    Good afternoon, Max
-                  </AppText>
-                  <AppText variant="title" style={styles.headline}>
-                    What are you craving?
-                  </AppText>
-                </View>
+                {/* ── Senior UI/UX Home Top Header (Brand, Mode Switcher, Deals, Bell, Search, Greeting) ── */}
+                <HomeTopHeader
+                  userName="Max"
+                  onOpenSearch={() => router.navigate('/products' as any)}
+                  onOpenDietary={() => router.navigate('/dietary' as any)}
+                />
 
                 {/* 1. Live Active Delivery Tracker Banner */}
                 <LiveOrderBanner />
@@ -281,13 +246,6 @@ export default function ExploreScreen() {
         </View>
       )}
 
-      {/* Honest Location Disclosure Modal */}
-      <HonestNoticeModal
-        visible={locationNoticeVisible}
-        title="Delivery address"
-        message={`Currently set to ${selectedAddress.title} (${selectedAddress.fullAddress}). You can change addresses or pick a saved location directly in Checkout.`}
-        onClose={() => setLocationNoticeVisible(false)}
-      />
     </Screen>
   );
 }
@@ -297,43 +255,8 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
   },
-  topBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    minHeight: 52,
-  },
-  locationAffordance: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    paddingVertical: Spacing.xs,
-  },
-  locationPrefix: {
-    marginLeft: Spacing.xs,
-    marginRight: 4,
-  },
-  locationText: {
-    marginRight: 4,
-  },
-  topActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
   listContent: {
     paddingBottom: 170, // Ample clearance for floating dock and cart
-  },
-  greetingSection: {
-    paddingHorizontal: Spacing.md,
-    paddingTop: Spacing.lg,
-    paddingBottom: Spacing.md,
-  },
-  headline: {
-    marginTop: 2,
   },
   featuredSection: {
     marginBottom: Spacing.xl,

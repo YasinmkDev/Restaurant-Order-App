@@ -844,7 +844,7 @@ export default function AllProductsScreen() {
       />
 
       {/* Floating Cart Button */}
-      <FloatingCartButton onPress={() => router.navigate('/checkout' as any)} />
+      <FloatingCartButton bottomOffset={24} onPress={() => router.navigate('/checkout' as any)} />
     </Screen>
   );
 }

@@ -26,6 +26,8 @@ import { WalletCard } from '../../components/account/WalletCard';
 import { QuickActionGrid } from '../../components/account/QuickActionGrid';
 import { EditProfileModal } from '../../components/account/EditProfileModal';
 import { VouchersModal } from '../../components/account/VouchersModal';
+import { StylishToggle } from '../../components/ui/StylishToggle';
+import { AnimatedAppearanceSelector } from '../../components/account/AnimatedAppearanceSelector';
 
 export default function AccountScreen() {
   const router = useSafeRouter();
@@ -146,20 +148,10 @@ export default function AccountScreen() {
 
         {/* ── 2. Quick Action Grid (Favorites, Vouchers, Orders, Support) ── */}
         <QuickActionGrid
-          onPressFavorites={() =>
-            handleNotice(
-              'Saved Favorites',
-              'Your 8 saved restaurants including Cheezious F-7, Savour Foods, and Chaaye Khana are bookmarked for instant reordering.'
-            )
-          }
+          onPressFavorites={() => router.navigate('/favorites' as any)}
           onPressVouchers={() => setVouchersVisible(true)}
           onPressOrders={() => router.navigate('/(tabs)/orders' as any)}
-          onPressHelp={() =>
-            handleNotice(
-              '24/7 Swift Dispatch Desk',
-              'Instant assistance available for live route changes, missing order items, and rider verification across Islamabad.'
-            )
-          }
+          onPressHelp={() => router.navigate('/support' as any)}
         />
 
         {/* ── 3. Swift Pass VIP Banner ── */}
@@ -192,79 +184,7 @@ export default function AccountScreen() {
         {/* ── 5. Appearance Selection ── */}
         <View style={styles.section}>
           <SectionHeader title="Appearance" />
-          <View
-            style={[
-              styles.themeSwitchTrack,
-              {
-                backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : '#F1F5F9',
-                borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
-              },
-            ]}
-          >
-            <Pressable
-              onPress={() => handleThemeChange('light')}
-              accessible={true}
-              accessibilityRole="button"
-              accessibilityLabel="Light theme"
-              style={[
-                styles.themeTab,
-                !isDark && [
-                  styles.themeTabActive,
-                  { backgroundColor: colors.surfaceRaised },
-                ],
-              ]}
-            >
-              <Ionicons
-                name="sunny"
-                size={16}
-                color={!isDark ? colors.accent : '#94A3B8'}
-                style={{ marginRight: 6 }}
-              />
-              <Text
-                style={[
-                  styles.themeTabText,
-                  {
-                    color: !isDark ? colors.accent : '#94A3B8',
-                    fontWeight: !isDark ? '800' : '600',
-                  },
-                ]}
-              >
-                Light
-              </Text>
-            </Pressable>
-
-            <Pressable
-              onPress={() => handleThemeChange('dark')}
-              accessible={true}
-              accessibilityRole="button"
-              accessibilityLabel="Dark theme"
-              style={[
-                styles.themeTab,
-                isDark && [
-                  styles.themeTabActive,
-                  { backgroundColor: colors.surfaceRaised },
-                ],
-              ]}
-            >
-              <Ionicons
-                name="moon"
-                size={16}
-                color={isDark ? colors.accent : '#94A3B8'}
-                style={{ marginRight: 6 }}
-              />
-              <Text
-                style={[
-                  styles.themeTabText,
-                  {
-                    color: isDark ? colors.accent : '#94A3B8',
-                    fontWeight: isDark ? '800' : '600',
-                  },
-                ]}
-              >
-                Dark
-              </Text>
-            </Pressable>
-          </View>
+          <AnimatedAppearanceSelector mode={mode} onChange={setMode} />
         </View>
 
         <Divider spacing={Spacing.md} />
@@ -275,10 +195,10 @@ export default function AccountScreen() {
 
           {/* Saved Delivery Address */}
           <Pressable
-            onPress={() => setAddressModalVisible(true)}
+            onPress={() => router.navigate('/addresses' as any)}
             accessible={true}
             accessibilityRole="button"
-            accessibilityLabel="Change delivery address"
+            accessibilityLabel="Manage saved delivery addresses"
             style={styles.settingRow}
           >
             <View style={styles.settingLeft}>
@@ -306,15 +226,10 @@ export default function AccountScreen() {
 
           {/* Dietary Preferences */}
           <Pressable
-            onPress={() =>
-              handleNotice(
-                'Dietary & Allergy Filter',
-                'Your preferences: 100% Certified Halal, Medium Spice, Nut Allergy alerts enabled.'
-              )
-            }
+            onPress={() => router.navigate('/dietary' as any)}
             accessible={true}
             accessibilityRole="button"
-            accessibilityLabel="Dietary preferences"
+            accessibilityLabel="Manage dietary and allergy preferences"
             style={styles.settingRow}
           >
             <View style={styles.settingLeft}>
@@ -330,7 +245,7 @@ export default function AccountScreen() {
                 >
                   Dietary Preferences
                 </Text>
-                <Text style={styles.settingSub}>100% Halal • Medium Spice</Text>
+                <Text style={styles.settingSub}>100% Halal • Spice level • Allergens</Text>
               </View>
             </View>
             <Ionicons name="chevron-forward" size={16} color="#94A3B8" />
@@ -361,14 +276,12 @@ export default function AccountScreen() {
                 <Text style={styles.settingSub}>Real-time delivery progress and rider alerts</Text>
               </View>
             </View>
-            <Switch
+            <StylishToggle
               value={pushNotifications}
-              onValueChange={(val) => {
-                Haptics.selectionAsync().catch(() => {});
-                setPushNotifications(val);
-              }}
-              trackColor={{ false: '#94A3B8', true: colors.accent }}
-              thumbColor="#FFFFFF"
+              onValueChange={setPushNotifications}
+              activeColor="#3B82F6"
+              icon="notifications"
+              accessibilityLabel="Toggle live order notifications"
             />
           </View>
 
@@ -392,14 +305,12 @@ export default function AccountScreen() {
                 <Text style={styles.settingSub}>SMS and push alerts for flash voucher drops</Text>
               </View>
             </View>
-            <Switch
+            <StylishToggle
               value={promoAlerts}
-              onValueChange={(val) => {
-                Haptics.selectionAsync().catch(() => {});
-                setPromoAlerts(val);
-              }}
-              trackColor={{ false: '#94A3B8', true: colors.accent }}
-              thumbColor="#FFFFFF"
+              onValueChange={setPromoAlerts}
+              activeColor="#F59E0B"
+              icon="pricetag"
+              accessibilityLabel="Toggle discount alerts"
             />
           </View>
 
@@ -423,14 +334,12 @@ export default function AccountScreen() {
                 <Text style={styles.settingSub}>Require 4-digit PIN for safe delivery confirmation</Text>
               </View>
             </View>
-            <Switch
+            <StylishToggle
               value={biometricPin}
-              onValueChange={(val) => {
-                Haptics.selectionAsync().catch(() => {});
-                setBiometricPin(val);
-              }}
-              trackColor={{ false: '#94A3B8', true: colors.accent }}
-              thumbColor="#FFFFFF"
+              onValueChange={setBiometricPin}
+              activeColor="#10B981"
+              icon="shield-checkmark"
+              accessibilityLabel="Toggle rider handover PIN"
             />
           </View>
         </View>
@@ -443,12 +352,7 @@ export default function AccountScreen() {
 
           {/* 24/7 Help Desk */}
           <Pressable
-            onPress={() =>
-              handleNotice(
-                'Help & Support Center',
-                'Call our 24/7 Islamabad dispatch center at +92 (51) 111-79438 or chat live with a support representative.'
-              )
-            }
+            onPress={() => router.navigate('/support' as any)}
             accessible={true}
             accessibilityRole="button"
             accessibilityLabel="Help and support"
@@ -467,7 +371,7 @@ export default function AccountScreen() {
                 >
                   Help Desk & Contact
                 </Text>
-                <Text style={styles.settingSub}>Contact dispatch or report an issue</Text>
+                <Text style={styles.settingSub}>24/7 dispatch hotline, chat, and resolution center</Text>
               </View>
             </View>
             <Ionicons name="chevron-forward" size={16} color="#94A3B8" />

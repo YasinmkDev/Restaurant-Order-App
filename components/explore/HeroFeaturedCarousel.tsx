@@ -13,6 +13,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
   withTiming,
+  Easing,
   useReducedMotion,
 } from 'react-native-reanimated';
 import { Image } from 'expo-image';
@@ -86,6 +87,14 @@ export function HeroFeaturedCarousel({
     });
   };
 
+  const handleScroll = (e: any) => {
+    const offsetX = e.nativeEvent.contentOffset.x;
+    const index = Math.round(offsetX / SNAP_INTERVAL);
+    if (index >= 0 && index < items.length && index !== currentIndex) {
+      setCurrentIndex(index);
+    }
+  };
+
   const handleScrollEnd = (e: any) => {
     const offsetX = e.nativeEvent.contentOffset.x;
     const index = Math.round(offsetX / SNAP_INTERVAL);
@@ -112,6 +121,8 @@ export function HeroFeaturedCarousel({
           paddingHorizontal: SIDE_INSET,
         }}
         ItemSeparatorComponent={() => <View style={{ width: GAP }} />}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
         onMomentumScrollEnd={handleScrollEnd}
         onTouchStart={() => {
           isInteracting.current = true;
@@ -290,28 +301,60 @@ function PaginationDot({
   onPress,
 }: PaginationDotProps) {
   const isActive = index === currentIndex;
-  const width = useSharedValue(isActive ? 24 : 7);
+  const shouldReduceMotion = useReducedMotion();
+
+  const width = useSharedValue(isActive ? 20 : 6);
+  const opacity = useSharedValue(isActive ? 1 : 0.35);
+  const pressScale = useSharedValue(1);
 
   useEffect(() => {
-    width.value = withSpring(isActive ? 24 : 7, {
-      damping: 14,
-      stiffness: 260,
-    });
-  }, [isActive, width]);
+    if (shouldReduceMotion) {
+      width.value = isActive ? 20 : 6;
+      opacity.value = isActive ? 1 : 0.35;
+      return;
+    }
 
-  const animatedStyle = useAnimatedStyle(() => ({
+    // Snappy, modern micro-animation: fast 180ms cubic ease-out avoids sluggish lag
+    width.value = withTiming(isActive ? 20 : 6, {
+      duration: 180,
+      easing: Easing.out(Easing.cubic),
+    });
+    opacity.value = withTiming(isActive ? 1 : 0.35, {
+      duration: 160,
+    });
+  }, [isActive, shouldReduceMotion]);
+
+  const animatedDotStyle = useAnimatedStyle(() => ({
     width: width.value,
+    opacity: opacity.value,
+    transform: [{ scale: pressScale.value }],
   }));
 
+  const handlePressIn = () => {
+    pressScale.value = withTiming(0.85, { duration: 100 });
+  };
+
+  const handlePressOut = () => {
+    pressScale.value = withTiming(1, { duration: 120 });
+  };
+
   return (
-    <Pressable onPress={onPress} hitSlop={8}>
+    <Pressable
+      onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      hitSlop={10}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={`Go to slide ${index + 1}`}
+    >
       <Animated.View
         style={[
           styles.dot,
           {
-            backgroundColor: isActive ? accentColor : 'rgba(150, 150, 150, 0.35)',
+            backgroundColor: isActive ? accentColor : 'rgba(150, 150, 150, 0.5)',
           },
-          animatedStyle,
+          animatedDotStyle,
         ]}
       />
     </Pressable>
@@ -353,17 +396,17 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 80,
-    backgroundColor: 'rgba(0,0,0,0.32)',
+    height: 60,
+    backgroundColor: 'rgba(0,0,0,0.16)',
   },
-  // Deep bottom gradient for ultra-crisp typography
+  // Light bottom scrim so food photo remains clearly visible
   bottomScrim: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    height: 150,
-    backgroundColor: 'rgba(0,0,0,0.78)',
+    height: 115,
+    backgroundColor: 'rgba(0,0,0,0.40)',
   },
   topBadgesRow: {
     position: 'absolute',
@@ -446,9 +489,9 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: -0.3,
     marginBottom: 10,
-    textShadowColor: 'rgba(0,0,0,0.4)',
+    textShadowColor: 'rgba(0,0,0,0.65)',
     textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
+    textShadowRadius: 4,
   },
   priceActionRow: {
     flexDirection: 'row',
@@ -497,7 +540,14 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   dot: {
-    height: 7,
-    borderRadius: 3.5,
+    height: 6,
+    borderRadius: Radius.full,
+  },
+  dotActive: {
+    width: 20,
+  },
+  dotInactive: {
+    width: 6,
+    backgroundColor: 'rgba(150, 150, 150, 0.35)',
   },
 });

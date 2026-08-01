@@ -682,7 +682,7 @@ export default function CategoryScreen() {
       />
 
       {/* Floating cart shortcut */}
-      <FloatingCartButton onPress={() => router.navigate('/checkout' as any)} />
+      <FloatingCartButton bottomOffset={24} onPress={() => router.navigate('/checkout' as any)} />
     </Screen>
   );
 }
