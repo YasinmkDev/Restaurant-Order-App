@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, {
@@ -22,6 +22,16 @@ export function FloatingCartButton({ onPress }: FloatingCartButtonProps) {
   const insets = useSafeAreaInsets();
   const itemCount = useCartStore((s) => s.getItemCount());
   const total = useCartStore((s) => s.getTotal());
+
+  const lastPressRef = useRef(0);
+  const handlePress = useCallback(() => {
+    const now = Date.now();
+    if (now - lastPressRef.current < 600) {
+      return;
+    }
+    lastPressRef.current = now;
+    onPress();
+  }, [onPress]);
 
   const translateY = useSharedValue(100);
   const opacity = useSharedValue(0);
@@ -57,7 +67,7 @@ export function FloatingCartButton({ onPress }: FloatingCartButtonProps) {
     >
       <Animated.View style={[styles.wrapper, animatedStyle]}>
         <Pressable
-          onPress={onPress}
+          onPress={handlePress}
           accessible={true}
           accessibilityRole="button"
           accessibilityLabel={`Shopping cart with ${itemsLabel}, total ${formatCurrency(total)}. View cart.`}

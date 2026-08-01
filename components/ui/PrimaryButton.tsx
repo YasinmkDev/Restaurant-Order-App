@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import {
   Pressable,
   ActivityIndicator,
@@ -36,6 +36,17 @@ export function PrimaryButton({
   accessibilityLabel,
 }: PrimaryButtonProps) {
   const { colors } = useTheme();
+  const lastPressRef = useRef(0);
+
+  const handlePress = useCallback(() => {
+    if (disabled || loading) return;
+    const now = Date.now();
+    if (now - lastPressRef.current < 450) {
+      return;
+    }
+    lastPressRef.current = now;
+    onPress();
+  }, [disabled, loading, onPress]);
 
   const isSmall = size === 'sm';
   const isLarge = size === 'lg';
@@ -48,7 +59,7 @@ export function PrimaryButton({
 
   return (
     <Pressable
-      onPress={onPress}
+      onPress={handlePress}
       disabled={disabled || loading}
       accessible={true}
       accessibilityRole="button"

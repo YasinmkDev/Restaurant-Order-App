@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, StatusBar } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
+import { useSafeRouter } from '../../hooks/useSafeRouter';
 import * as Haptics from 'expo-haptics';
 import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '../../components/ui/Screen';
@@ -17,7 +18,7 @@ import { useOrderStore } from '../../store/order.store';
 import { ORDER_STATUS_METADATA } from '../../lib/orderStatus';
 
 export default function TrackingScreen() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { orderId } = useLocalSearchParams<{ orderId: string }>();
   const { colors, isDark } = useTheme();
 

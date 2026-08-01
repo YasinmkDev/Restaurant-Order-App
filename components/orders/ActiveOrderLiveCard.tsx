@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Linking } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useSafeRouter } from '../../hooks/useSafeRouter';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -32,7 +32,7 @@ export function ActiveOrderLiveCard({
   order,
   onOpenChat,
 }: ActiveOrderLiveCardProps) {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { colors, isDark } = useTheme();
 
   // Active step index
@@ -82,7 +82,7 @@ export function ActiveOrderLiveCard({
 
   const handleTrackMap = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    router.push(`/tracking/${order.id}` as any);
+    router.navigate(`/tracking/${order.id}` as any);
   };
 
   return (

@@ -9,7 +9,7 @@ import {
   StatusBar,
   Alert,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useSafeRouter } from '../../hooks/useSafeRouter';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Screen } from '../../components/ui/Screen';
@@ -117,7 +117,7 @@ const COURIER_PACKAGES_DATA: CourierPackageData[] = [
 ];
 
 export default function OrdersScreen() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { colors, isDark } = useTheme();
 
   const currentOrder = useOrderStore((s) => s.currentOrder);
@@ -198,7 +198,7 @@ export default function OrdersScreen() {
         </View>
 
         <Pressable
-          onPress={() => router.push('/cart' as any)}
+          onPress={() => router.navigate('/checkout' as any)}
           accessible={true}
           accessibilityRole="button"
           accessibilityLabel="Open cart"
@@ -311,7 +311,7 @@ export default function OrdersScreen() {
                   Order hot food, groceries, or book an on-demand courier parcel rider across Islamabad & Rawalpindi.
                 </Text>
                 <Pressable
-                  onPress={() => router.push('/(tabs)' as any)}
+                  onPress={() => router.navigate('/(tabs)' as any)}
                   accessible={true}
                   accessibilityRole="button"
                   accessibilityLabel="Explore nearby restaurants and food"
@@ -460,7 +460,7 @@ export default function OrdersScreen() {
           <Pressable
             onPress={() => {
               setToastMessage(null);
-              router.push('/cart' as any);
+              router.navigate('/checkout' as any);
             }}
             style={styles.toastActionBtn}
           >

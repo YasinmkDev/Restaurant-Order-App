@@ -6,7 +6,7 @@ import {
   StyleSheet,
   StatusBar,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useSafeRouter } from '../../hooks/useSafeRouter';
 import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '../../components/ui/Screen';
 import { AppText } from '../../components/ui/AppText';
@@ -34,7 +34,7 @@ import { Store } from '../../types/store';
 import { Product } from '../../types/product';
 
 export default function ExploreScreen() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { colors, isDark } = useTheme();
   const selectedAddress = useOrderStore((s) => s.selectedAddress);
 
@@ -80,11 +80,11 @@ export default function ExploreScreen() {
   const handleOpenStore = (store: Store) => {
     const matchingProd =
       DEMO_PRODUCTS.find((p) => p.storeId === store.id) || DEMO_PRODUCTS[0];
-    router.push(`/product/${matchingProd.id}` as any);
+    router.navigate(`/product/${matchingProd.id}` as any);
   };
 
   const handleOpenProduct = (product: Product) => {
-    router.push(`/product/${product.id}` as any);
+    router.navigate(`/product/${product.id}` as any);
   };
 
   const handleSelectCraving = (craving: CravingItem) => {
@@ -117,7 +117,7 @@ export default function ExploreScreen() {
         <View style={styles.topActions}>
           <IconButton
             icon={<Ionicons name="bicycle-outline" size={18} color={colors.textPrimary} />}
-            onPress={() => router.push('/tracking/order-sw-9842' as any)}
+            onPress={() => router.navigate('/tracking/order-sw-9842' as any)}
             accessibilityLabel="Track active delivery"
             size={40}
           />
@@ -237,7 +237,7 @@ export default function ExploreScreen() {
           />
 
           {/* Refined Commerce Floating Cart positioned above floating dock */}
-          <FloatingCartButton onPress={() => router.push('/checkout' as any)} />
+          <FloatingCartButton onPress={() => router.navigate('/checkout' as any)} />
         </View>
       )}
 

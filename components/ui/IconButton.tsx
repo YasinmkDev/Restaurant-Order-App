@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import { Pressable, StyleSheet, ViewStyle } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 import { Radius } from './theme';
@@ -21,6 +21,16 @@ export function IconButton({
   style,
 }: IconButtonProps) {
   const { colors } = useTheme();
+  const lastPressRef = useRef(0);
+
+  const handlePress = useCallback(() => {
+    const now = Date.now();
+    if (now - lastPressRef.current < 450) {
+      return;
+    }
+    lastPressRef.current = now;
+    onPress();
+  }, [onPress]);
 
   const backgroundColor =
     variant === 'raised'
@@ -34,7 +44,7 @@ export function IconButton({
 
   return (
     <Pressable
-      onPress={onPress}
+      onPress={handlePress}
       accessible={true}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}

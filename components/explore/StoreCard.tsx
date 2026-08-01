@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -27,6 +27,16 @@ export function StoreCard({
 }: StoreCardProps) {
   const { colors } = useTheme();
   const opacity = useSharedValue(1);
+  const lastPressRef = useRef(0);
+
+  const handlePress = useCallback(() => {
+    const now = Date.now();
+    if (now - lastPressRef.current < 550) {
+      return;
+    }
+    lastPressRef.current = now;
+    onPress();
+  }, [onPress]);
 
   const handlePressIn = () => {
     opacity.value = withTiming(0.88, { duration: 120 });
@@ -44,7 +54,7 @@ export function StoreCard({
 
   return (
     <AnimatedPressable
-      onPress={onPress}
+      onPress={handlePress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       accessible={true}

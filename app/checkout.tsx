@@ -8,7 +8,7 @@ import {
   StatusBar,
   Alert,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useSafeRouter } from '../hooks/useSafeRouter';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Screen } from '../components/ui/Screen';
@@ -32,7 +32,7 @@ import { DEMO_ROUTE_COORDINATES } from '../data/routeCoordinates';
 import { Order } from '../types/order';
 
 export default function CheckoutScreen() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { colors, isDark } = useTheme();
 
   const items = useCartStore((s) => s.items);

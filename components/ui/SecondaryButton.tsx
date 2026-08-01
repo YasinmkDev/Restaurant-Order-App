@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import {
   Pressable,
   ActivityIndicator,
@@ -35,12 +35,23 @@ export function SecondaryButton({
   accessibilityLabel,
 }: SecondaryButtonProps) {
   const { colors } = useTheme();
+  const lastPressRef = useRef(0);
+
+  const handlePress = useCallback(() => {
+    if (disabled || loading) return;
+    const now = Date.now();
+    if (now - lastPressRef.current < 450) {
+      return;
+    }
+    lastPressRef.current = now;
+    onPress();
+  }, [disabled, loading, onPress]);
 
   const isSmall = size === 'sm';
 
   return (
     <Pressable
-      onPress={onPress}
+      onPress={handlePress}
       disabled={disabled || loading}
       accessible={true}
       accessibilityRole="button"

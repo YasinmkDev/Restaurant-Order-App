@@ -7,7 +7,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useSafeRouter } from '../../hooks/useSafeRouter';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -63,7 +63,7 @@ interface ArcActionItem {
   angleDeg: number;
   targetX: number;
   targetY: number;
-  action: (router: ReturnType<typeof useRouter>) => void;
+  action: (router: ReturnType<typeof useSafeRouter>) => void;
 }
 
 // ─── Constants & Math Calculations ──────────────────────────────────────────
@@ -88,8 +88,8 @@ const ARC_ACTIONS_BASE = [
     angleDeg: 150,
     targetX: Math.round(ARC_RADIUS * Math.cos((150 * Math.PI) / 180)), // -85px
     targetY: -Math.round(ARC_RADIUS * Math.sin((150 * Math.PI) / 180)), // -49px
-    action: (router: ReturnType<typeof useRouter>) => {
-      router.push('/checkout');
+    action: (router: ReturnType<typeof useSafeRouter>) => {
+      router.navigate('/checkout' as any);
     },
   },
   {
@@ -101,8 +101,8 @@ const ARC_ACTIONS_BASE = [
     angleDeg: 110,
     targetX: Math.round(ARC_RADIUS * Math.cos((110 * Math.PI) / 180)), // -34px
     targetY: -Math.round(ARC_RADIUS * Math.sin((110 * Math.PI) / 180)), // -92px
-    action: (router: ReturnType<typeof useRouter>) => {
-      router.push('/tracking/ORD-2024-001');
+    action: (router: ReturnType<typeof useSafeRouter>) => {
+      router.navigate('/tracking/ORD-2024-001' as any);
     },
   },
   {
@@ -114,8 +114,8 @@ const ARC_ACTIONS_BASE = [
     angleDeg: 70,
     targetX: Math.round(ARC_RADIUS * Math.cos((70 * Math.PI) / 180)), // +34px
     targetY: -Math.round(ARC_RADIUS * Math.sin((70 * Math.PI) / 180)), // -92px
-    action: (router: ReturnType<typeof useRouter>) => {
-      router.push('/orders');
+    action: (router: ReturnType<typeof useSafeRouter>) => {
+      router.navigate('/orders' as any);
     },
   },
   {
@@ -127,7 +127,7 @@ const ARC_ACTIONS_BASE = [
     angleDeg: 30,
     targetX: Math.round(ARC_RADIUS * Math.cos((30 * Math.PI) / 180)), // +85px
     targetY: -Math.round(ARC_RADIUS * Math.sin((30 * Math.PI) / 180)), // -49px
-    action: (router: ReturnType<typeof useRouter>) => {
+    action: (router: ReturnType<typeof useSafeRouter>) => {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => { });
     },
   },
@@ -470,7 +470,7 @@ function CenterFab({
 export function FloatingBottomNav({ state, navigation }: BottomTabBarProps) {
   const { colors, isDark } = useTheme();
   const insets = useSafeAreaInsets();
-  const router = useRouter();
+  const router = useSafeRouter();
   const reducedMotion = useReducedMotion();
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 

@@ -8,7 +8,7 @@ import {
   StatusBar,
   Alert,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useSafeRouter } from '../../hooks/useSafeRouter';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Screen } from '../../components/ui/Screen';
@@ -154,7 +154,7 @@ const INITIAL_ACTIVITY_ITEMS: ActivityFeedItem[] = [
 ];
 
 export default function ActivityScreen() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { colors, isDark } = useTheme();
   const currentOrder = useOrderStore((s) => s.currentOrder);
 
@@ -238,9 +238,9 @@ export default function ActivityScreen() {
   const handleAction = (item: ActivityFeedItem) => {
     if (item.category === 'orders') {
       if (currentOrder && item.id === 'act-live-order') {
-        router.push(`/tracking/${currentOrder.id}` as any);
+        router.navigate(`/tracking/${currentOrder.id}` as any);
       } else {
-        router.push('/(tabs)/orders' as any);
+        router.navigate('/(tabs)/orders' as any);
       }
     } else if (item.category === 'rewards') {
       Alert.alert(
@@ -249,7 +249,7 @@ export default function ActivityScreen() {
         [{ text: 'Great' }]
       );
     } else if (item.category === 'payments') {
-      router.push('/(tabs)/orders' as any);
+      router.navigate('/(tabs)/orders' as any);
     } else {
       Alert.alert(item.title, item.subtitle, [{ text: 'OK' }]);
     }

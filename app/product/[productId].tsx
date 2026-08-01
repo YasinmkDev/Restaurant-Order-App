@@ -11,7 +11,8 @@ import {
   Share,
   Alert,
 } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
+import { useSafeRouter } from '../../hooks/useSafeRouter';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Screen } from '../../components/ui/Screen';
@@ -29,7 +30,7 @@ import { QuickInstructionPills } from '../../components/product/QuickInstruction
 import { ProductFloatingBottomBar } from '../../components/product/ProductFloatingBottomBar';
 
 export default function ProductDetailScreen() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { productId } = useLocalSearchParams<{ productId: string }>();
   const { colors, isDark } = useTheme();
   const addItem = useCartStore((s) => s.addItem);
@@ -226,7 +227,7 @@ export default function ProductDetailScreen() {
               <Pressable
                 onPress={() => {
                   Haptics.selectionAsync().catch(() => {});
-                  router.push(`/(tabs)/explore` as any);
+                  router.navigate(`/(tabs)` as any);
                 }}
                 accessible={true}
                 accessibilityRole="button"

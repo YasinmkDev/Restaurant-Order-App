@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useSafeRouter } from '../../hooks/useSafeRouter';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -28,7 +28,7 @@ export function LiveOrderBanner({
   storeName = 'Tehzeeb Bakery',
   etaMinutes = 9,
 }: LiveOrderBannerProps) {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { colors, isDark } = useTheme();
   const [visible, setVisible] = useState(true);
 
@@ -64,7 +64,7 @@ export function LiveOrderBanner({
 
   const handleTrack = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    router.push(`/tracking/${orderId}` as any);
+    router.navigate(`/tracking/${orderId}` as any);
   };
 
   return (

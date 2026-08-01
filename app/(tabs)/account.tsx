@@ -9,7 +9,7 @@ import {
   StatusBar,
   Alert,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useSafeRouter } from '../../hooks/useSafeRouter';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Screen } from '../../components/ui/Screen';
@@ -28,7 +28,7 @@ import { EditProfileModal } from '../../components/account/EditProfileModal';
 import { VouchersModal } from '../../components/account/VouchersModal';
 
 export default function AccountScreen() {
-  const router = useRouter();
+  const router = useSafeRouter();
   const { colors, isDark, mode, setMode } = useTheme();
 
   const selectedAddress = useOrderStore((s) => s.selectedAddress);
@@ -153,7 +153,7 @@ export default function AccountScreen() {
             )
           }
           onPressVouchers={() => setVouchersVisible(true)}
-          onPressOrders={() => router.push('/(tabs)/orders' as any)}
+          onPressOrders={() => router.navigate('/(tabs)/orders' as any)}
           onPressHelp={() =>
             handleNotice(
               '24/7 Swift Dispatch Desk',
