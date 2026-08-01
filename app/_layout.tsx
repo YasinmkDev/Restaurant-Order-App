@@ -28,6 +28,18 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
+            name="category/[categoryKey]"
+            options={{
+              title: 'Category',
+            }}
+          />
+          <Stack.Screen
+            name="products"
+            options={{
+              title: 'All Products',
+            }}
+          />
+          <Stack.Screen
             name="tracking/[orderId]"
             options={{
               title: 'Live Tracking',

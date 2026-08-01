@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   View,
   FlatList,
@@ -15,7 +15,7 @@ import { IconButton } from '../../components/ui/IconButton';
 import { SectionHeader } from '../../components/ui/SectionHeader';
 import { PrimaryButton } from '../../components/ui/PrimaryButton';
 import { HonestNoticeModal } from '../../components/ui/HonestNoticeModal';
-import { CategoryTabs, CategoryKey } from '../../components/explore/CategoryTabs';
+import { CategoryKey } from '../../components/explore/CategoryTabs';
 import { ExploreSkeleton } from '../../components/explore/ExploreSkeleton';
 import { StoreCard } from '../../components/explore/StoreCard';
 import { ProductCard } from '../../components/explore/ProductCard';
@@ -24,6 +24,7 @@ import { LiveOrderBanner } from '../../components/explore/LiveOrderBanner';
 import { BentoServicesGrid } from '../../components/explore/BentoServicesGrid';
 import { CravingsRail, CravingItem } from '../../components/explore/CravingsRail';
 import { FlashDealBanner } from '../../components/explore/FlashDealBanner';
+import { ViewAllProductsCard } from '../../components/explore/ViewAllProductsCard';
 import { FloatingCartButton } from '../../components/cart/FloatingCartButton';
 import { useTheme } from '../../hooks/useTheme';
 import { Spacing } from '../../components/ui/theme';
@@ -62,6 +63,11 @@ export default function ExploreScreen() {
     return DEMO_PRODUCTS.filter((p) => p.category === selectedCategory);
   }, [selectedCategory]);
 
+  const HOME_RECOMMENDED_LIMIT = 4;
+  const displayedProducts = useMemo(() => {
+    return filteredProducts.slice(0, HOME_RECOMMENDED_LIMIT);
+  }, [filteredProducts]);
+
   const featuredCarouselItems = useMemo(() => {
     const pool =
       selectedCategory === 'all'
@@ -87,8 +93,30 @@ export default function ExploreScreen() {
     router.navigate(`/product/${product.id}` as any);
   };
 
+  const handleOpenAllProducts = useCallback(() => {
+    router.navigate('/products' as any);
+  }, [router]);
+
   const handleSelectCraving = (craving: CravingItem) => {
-    setSelectedCategory(craving.category);
+    router.navigate({
+      pathname: '/category/[categoryKey]',
+      params: { categoryKey: craving.id, title: craving.name },
+    } as any);
+  };
+
+  const handleSelectBentoCategory = (category: CategoryKey) => {
+    const title =
+      category === 'food'
+        ? 'Food Delivery'
+        : category === 'grocery'
+        ? 'Daily Groceries'
+        : category === 'package'
+        ? 'Package Courier'
+        : 'Flash Offers';
+    router.navigate({
+      pathname: '/category/[categoryKey]',
+      params: { categoryKey: category, title },
+    } as any);
   };
 
   return (
@@ -131,14 +159,14 @@ export default function ExploreScreen() {
       ) : (
         <View style={styles.content}>
           <FlatList
-            data={filteredProducts}
+            data={displayedProducts}
             keyExtractor={(item) => `prod-${item.id}`}
             renderItem={({ item, index }) => (
               <View style={styles.productPadding}>
                 <ProductCard
                   product={item}
                   onPress={() => handleOpenProduct(item)}
-                  showDivider={index < filteredProducts.length - 1}
+                  showDivider={index < displayedProducts.length - 1}
                 />
               </View>
             )}
@@ -175,16 +203,10 @@ export default function ExploreScreen() {
                 <LiveOrderBanner />
 
                 {/* 2. Bento Quick Services Grid */}
-                <BentoServicesGrid onSelectCategory={setSelectedCategory} />
+                <BentoServicesGrid onSelectCategory={handleSelectBentoCategory} />
 
                 {/* 3. Explore by Craving Mood Rail */}
                 <CravingsRail onSelectCraving={handleSelectCraving} />
-
-                {/* 4. Category Tabs */}
-                <CategoryTabs
-                  selectedCategory={selectedCategory}
-                  onSelectCategory={setSelectedCategory}
-                />
 
                 {/* 5. Hero Featured Specials Carousel */}
                 {featuredCarouselItems.length > 0 && (
@@ -229,10 +251,28 @@ export default function ExploreScreen() {
                 {/* Recommended Items Section Title */}
                 {filteredProducts.length > 0 && (
                   <View style={styles.recommendedTitlePadding}>
-                    <SectionHeader title="Recommended for you" />
+                    <SectionHeader
+                      title="Recommended for you"
+                      actionLabel={filteredProducts.length > HOME_RECOMMENDED_LIMIT ? `View all (${DEMO_PRODUCTS.length}) →` : undefined}
+                      onAction={handleOpenAllProducts}
+                    />
                   </View>
                 )}
               </View>
+            }
+            ListFooterComponent={
+              filteredProducts.length > 0 ? (
+                <ViewAllProductsCard
+                  totalCount={DEMO_PRODUCTS.length}
+                  onExplore={handleOpenAllProducts}
+                  onSelectCategory={(catId) => {
+                    router.navigate({
+                      pathname: '/category/[categoryKey]',
+                      params: { categoryKey: catId },
+                    } as any);
+                  }}
+                />
+              ) : null
             }
           />
 
