@@ -1,7 +1,7 @@
 # Swift Courier — React Native Delivery MVP
 
 > **Fast delivery, beautifully tracked.**  
-> A high-performance, production-style React Native delivery application built with **Expo**, **TypeScript**, **Expo Router**, **react-native-reanimated**, **react-native-gesture-handler**, **@gorhom/bottom-sheet**, **react-native-maps**, **Zustand**, and **Supabase Realtime**.
+> Branded in-app as **Swift Courier**, a food delivery app — a high-performance, production-style React Native delivery application built with **Expo**, **TypeScript**, **Expo Router**, **react-native-reanimated**, **react-native-gesture-handler**, **@gorhom/bottom-sheet**, **@maplibre/maplibre-react-native**, **Zustand**, and **Supabase Realtime**.
 
 ---
 
@@ -17,11 +17,56 @@
 
 ---
 
+## 📸 Screens
+
+Captured from the running app at a 390×844 mobile viewport, in route order. The app defaults to its dark theme; checkout is shown in its empty-cart state (a fresh session starts with an empty cart), and tracking uses the pre-seeded offline demo order `order-sw-9842`.
+
+![Home](docs/screenshots/home.png)
+*Home — marketplace launchpad with search, Swift Pass banner, live delivery card, and category shortcuts.*
+
+![Orders](docs/screenshots/orders.png)
+*Orders — active, completed, and courier order history.*
+
+![Activity](docs/screenshots/activity.png)
+*Activity — order updates, transaction receipts, points, and rewards.*
+
+![Account](docs/screenshots/account.png)
+*Account — membership tier, wallet, security, and appearance preferences.*
+
+![Products](docs/screenshots/products.png)
+*Products — the full master catalog across all categories.*
+
+![Product detail](docs/screenshots/product-detail.png)
+*Product detail — Savour Special Chicken Pulao with ratings, modifiers, and pricing.*
+
+![Category](docs/screenshots/category.png)
+*Category — Biryani & Rice explorer with search, filters, and quick add.*
+
+![Favorites](docs/screenshots/favorites.png)
+*Favorites — saved dishes and restaurants for instant reordering.*
+
+![Checkout](docs/screenshots/checkout.png)
+*Checkout — review and confirmation step (shown with an empty cart).*
+
+![Tracking](docs/screenshots/tracking.png)
+*Tracking — live courier tracking for demo order `order-sw-9842` with ETA and handover PIN.*
+
+![Addresses](docs/screenshots/addresses.png)
+*Addresses — saved drop-off locations in Islamabad.*
+
+![Dietary](docs/screenshots/dietary.png)
+*Dietary — kitchen filters and allergy alert preferences.*
+
+![Support](docs/screenshots/support.png)
+*Support — 24/7 help desk with live dispatch status.*
+
+---
+
 ## 🛠 Tech Stack
 
 | Layer | Tool / Library |
 |---|---|
-| Framework | **Expo SDK 52** (Managed Workflow) with **Expo Router v4** |
+| Framework | **Expo SDK 57** (Managed Workflow) with **Expo Router** |
 | Language | **TypeScript** (Strict mode) |
 | UI Primitives | Pure React Native (`View`, `Text`, `Pressable`, `FlatList`, `ScrollView`, `SafeAreaView`) |
 | Gestures | **react-native-gesture-handler** (Swipe-to-order, pan gesture) |
@@ -41,12 +86,24 @@
 swift-courier-react-native/
 ├── app/                        # Expo Router file-based routes
 │   ├── _layout.tsx             # Root layout with GestureHandlerRootView & SafeArea
-│   ├── index.tsx               # Explore marketplace screen (FlatList, categories, cart pill)
-│   ├── checkout.tsx            # Checkout & order confirmation screen
+│   ├── index.tsx               # Redirect to the tab navigator
+│   ├── (tabs)/
+│   │   ├── index.tsx           # Home marketplace screen (search, categories, cart pill)
+│   │   ├── orders.tsx          # Order history screen
+│   │   ├── activity.tsx        # Activity hub (updates, receipts, rewards)
+│   │   └── account.tsx         # Account & settings screen
+│   ├── products.tsx            # Master catalog screen
 │   ├── product/
 │   │   └── [productId].tsx     # Product details & modifier customization
-│   └── tracking/
-│       └── [orderId].tsx       # Live delivery tracking screen & simulation
+│   ├── category/
+│   │   └── [categoryKey].tsx   # Category explorer with search & filters
+│   ├── favorites.tsx           # Saved dishes & restaurants
+│   ├── checkout.tsx            # Checkout & order confirmation screen
+│   ├── tracking/
+│   │   └── [orderId].tsx       # Live delivery tracking screen & simulation
+│   ├── addresses.tsx           # Saved drop-off addresses
+│   ├── dietary.tsx             # Dietary & allergy preferences
+│   └── support.tsx             # Help desk screen
 │
 ├── components/
 │   └── ui/                     # Pure React Native UI components
@@ -96,7 +153,7 @@ swift-courier-react-native/
 
 ### 1. Install Dependencies
 
-Using `npx expo install` ensures versions compatible with Expo SDK 52:
+Using `npx expo install` ensures versions compatible with Expo SDK 57:
 
 ```bash
 npm install
@@ -105,7 +162,7 @@ npm install
 Or install the exact native modules with Expo CLI:
 
 ```bash
-npx expo install expo-router react-native-safe-area-context react-native-screens react-native-gesture-handler react-native-reanimated @gorhom/bottom-sheet react-native-maps expo-haptics expo-image zustand @react-native-async-storage/async-storage @supabase/supabase-js expo-status-bar expo-constants @expo/vector-icons
+npx expo install expo-router react-native-safe-area-context react-native-screens react-native-gesture-handler react-native-reanimated @gorhom/bottom-sheet @maplibre/maplibre-react-native expo-haptics expo-image zustand @react-native-async-storage/async-storage @supabase/supabase-js expo-status-bar expo-constants @expo/vector-icons
 ```
 
 ### 2. Environment Variables (Optional)
