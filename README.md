@@ -19,7 +19,7 @@
 
 ## 📸 Screens
 
-Captured from the running app at a 390×844 mobile viewport, in route order. The app defaults to its dark theme; checkout is shown in its empty-cart state (a fresh session starts with an empty cart), and tracking uses the pre-seeded offline demo order `order-sw-9842`.
+Captured from the running app at a 390×844 mobile viewport, in route order. Screenshots were captured with the Light theme selected in Account > Appearance (the app defaults to its dark theme); checkout is shown in its empty-cart state (a fresh session starts with an empty cart), and tracking uses the pre-seeded offline demo order `order-sw-9842`.
 
 ![Home](docs/screenshots/home.png)
 *Home — marketplace launchpad with search, Swift Pass banner, live delivery card, and category shortcuts.*
